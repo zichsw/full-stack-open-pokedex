@@ -2,7 +2,7 @@ import { test, describe, expect, beforeEach } from '@playwright/test'
 
 describe('Pokedex', () => {
   beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:8081')
+    await page.goto('http://localhost:8080')
   })
 
   test('front page can be opened', async ({ page }) => {
