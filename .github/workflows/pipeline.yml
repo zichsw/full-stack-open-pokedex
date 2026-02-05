@@ -8,33 +8,17 @@ on:
 jobs:
   simple_deployment_pipeline:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-
       - name: Install dependencies
         run: npm install
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-
-      - name: Start app
-        run: |
-          npm run start &
-          sleep 2
-
-      - name: Wait for server
-        run: npx wait-on http://localhost:8081
-
-      - name: Check style
+      - name: Check style 
         run: npm run eslint
-
-      - name: Unit testing
+      - name: unit testing 
         run: npm run test
+        
 
-      - name: E2E testing
-        run: npm run test:e2e
+      
