@@ -1,0 +1,28 @@
+name: Periodic Health Check
+
+on:
+  schedule:
+    # Syntax: 'Minute Hour Day Month Day-of-week'
+    - cron: '0 0 * * *'  
+  # Allows you to trigger it manually from the "Actions" tab
+  workflow_dispatch: 
+
+jobs:
+  health_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the deployed service URL
+        uses: jtalk/url-health-check-action@v4
+        with:
+          url: https://full-stack-open-pokedex-green-feather-7746.fly.dev/ 
+          max-attempts: 3
+          retry-delay: 5s
+
+      - name: Notify Discord on Failure
+        if: failure()
+        uses: rjstone/discord-webhook-notify@v2
+        with:
+          severity: error
+          username: Health Check Bot
+          text: "🚨 The app is DOWN! Health check failed for https://full-stack-open-pokedex-green-feather-7746.fly.dev/"
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
