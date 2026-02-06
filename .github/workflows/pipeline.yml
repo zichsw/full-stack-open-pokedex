@@ -48,7 +48,7 @@ jobs:
         with:
           fetch-depth: '0'
       - name: bump version and push tag
-        uses: anothrNick/github-tag-action@v1
+        uses: anothrNick/github-tag-action@8c8163ef62cf9c4677c8e800f36270af27930f42
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
@@ -73,6 +73,25 @@ jobs:
         name: playwright-report
         path: playwright-report/
         retention-days: 30
-        
+  
+  discord_notify:
+    needs: [simple_deployment_pipeline, deploy, e2e_test]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Notify discord
+        uses: rjstone/discord-webhook-notify@v2
+        with:
+          severity: info
+          username: Github Actions
+          description: |
+            Deployment Pipeline Status: 
+            Simple pipeline: ${{ needs.simple_deployment_pipeline.result}}
+            Deployment: ${{needs.deploy.result}}
+            E2E tests: ${{needs.e2e_test.result}}
+          details: 'Commit ${{github.event.head_commit.message}}'
+          webhookUrl: ${{secrets.DISCORD_WEBHOOK}}
+
+
 
       
